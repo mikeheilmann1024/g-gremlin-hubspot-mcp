@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "g-gremlin-hubspot-mcp"
-version = "0.1.0"
-description = "HubSpot MCP server powered by g-gremlin — breaks the 10k ceiling, dedup merge plans, schema management, and more."
+version = "0.1.1"
+description = "HubSpot MCP server powered by g-gremlin -- breaks the 10k ceiling, dedup merge plans, schema management, and more."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
@@ -23,6 +23,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries",
 ]
 dependencies = [
+    "g-gremlin>=0.1.14",
     "mcp>=1.0",
     "packaging>=21.0",
 ]

@@ -89,7 +89,7 @@ def _find_gremlin() -> str:
         return _gremlin_path
 
     raise RuntimeError(
-        "g-gremlin not found. Install with: pip install g-gremlin"
+        "g-gremlin not found. Install with: pipx install g-gremlin"
     )
 
 
@@ -172,7 +172,7 @@ async def check_gremlin_version() -> str:
     if detected < required:
         raise RuntimeError(
             f"g-gremlin {detected} found, but >={MIN_GREMLIN_VERSION} required. "
-            f"Run: pip install --upgrade g-gremlin"
+            f"Run: pipx upgrade g-gremlin"
         )
 
     logger.info("g-gremlin %s detected (>=%s required)", detected, required)
