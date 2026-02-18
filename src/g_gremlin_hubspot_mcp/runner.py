@@ -12,7 +12,7 @@ import asyncio
 import logging
 import shutil
 import sys
-from asyncio.subprocess import PIPE
+from asyncio.subprocess import PIPE, DEVNULL
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Sequence
@@ -97,6 +97,7 @@ async def run_raw(cmd: Sequence[str], *, timeout: int = DEFAULT_TIMEOUT) -> RunR
     """Execute a command and return raw RunResult."""
     proc = await asyncio.create_subprocess_exec(
         *cmd,
+        stdin=DEVNULL,
         stdout=PIPE,
         stderr=PIPE,
     )

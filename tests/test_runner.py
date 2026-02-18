@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, patch, MagicMock
 
 import pytest
 
+from g_gremlin_hubspot_mcp import runner as runner_mod
 from g_gremlin_hubspot_mcp.runner import (
     DEFAULT_TIMEOUT,
     RunResult,
@@ -98,3 +99,22 @@ class TestRunGremlin:
             await run_gremlin(["hubspot", "whoami"], tool_name="whoami", timeout=999)
             _, kwargs = mock_raw.call_args
             assert kwargs["timeout"] == 999
+
+
+class TestRunRaw:
+    @pytest.mark.asyncio
+    async def test_uses_devnull_for_stdin(self):
+        mock_proc = MagicMock()
+        mock_proc.communicate = AsyncMock(return_value=(b"ok", b""))
+        mock_proc.returncode = 0
+
+        with patch(
+            "g_gremlin_hubspot_mcp.runner.asyncio.create_subprocess_exec",
+            new_callable=AsyncMock,
+            return_value=mock_proc,
+        ) as mock_exec:
+            result = await runner_mod.run_raw(["g-gremlin", "--version"], timeout=10)
+
+        assert result.ok is True
+        _, kwargs = mock_exec.call_args
+        assert kwargs["stdin"] == runner_mod.DEVNULL
