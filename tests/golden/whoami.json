@@ -1,0 +1,18 @@
+{
+  "$schema": "AgenticResult/v1",
+  "command": "g-gremlin hubspot whoami",
+  "status": "success",
+  "dry_run": false,
+  "confidence_score": 1.0,
+  "confidence_blocked": false,
+  "warnings": [],
+  "result": {
+    "hub_id": 12345678,
+    "hub_name": "Acme Corp",
+    "user": "admin@acme.com",
+    "scopes": ["contacts", "content", "forms", "tickets"],
+    "token_type": "private-app"
+  },
+  "correlation_id": "test-correlation-id",
+  "timestamp": "2026-02-14T00:00:00+00:00"
+}

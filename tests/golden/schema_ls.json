@@ -1,0 +1,8 @@
+[
+  {"name": "contacts", "label": "Contacts", "type": "standard"},
+  {"name": "companies", "label": "Companies", "type": "standard"},
+  {"name": "deals", "label": "Deals", "type": "standard"},
+  {"name": "tickets", "label": "Tickets", "type": "standard"},
+  {"name": "products", "label": "Products", "type": "standard"},
+  {"name": "2-12345", "label": "Custom Widget", "type": "custom"}
+]

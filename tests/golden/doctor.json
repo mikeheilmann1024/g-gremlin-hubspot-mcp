@@ -1,0 +1,15 @@
+{
+  "$schema": "DoctorResult/v1",
+  "provider": "hubspot",
+  "overall_status": "healthy",
+  "identity": {
+    "hub_id": 12345678,
+    "hub_name": "Acme Corp"
+  },
+  "checks": [
+    {"name": "connectivity", "status": "pass", "detail": "API reachable"},
+    {"name": "token_valid", "status": "pass", "detail": "Token valid"},
+    {"name": "scopes", "status": "pass", "detail": "Required scopes present"},
+    {"name": "contacts_read", "status": "pass", "detail": "Can read contacts"}
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "g-gremlin-hubspot": {
+      "command": "g-gremlin-hubspot-mcp",
+      "env": {
+        "G_GREMLIN_HUBSPOT_ACCESS_TOKEN": "YOUR_HUBSPOT_PRIVATE_APP_TOKEN"
+      }
+    }
+  }
+}
