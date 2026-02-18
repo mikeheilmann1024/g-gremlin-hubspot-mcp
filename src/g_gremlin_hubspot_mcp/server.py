@@ -38,11 +38,23 @@ from g_gremlin_hubspot_mcp.tools.mutate import (
 
 logger = logging.getLogger(__name__)
 
+def _create_mcp_server() -> FastMCP:
+    """Create FastMCP server across SDK versions.
+
+    Newer `mcp` SDK builds removed the `version` kwarg from FastMCP.__init__.
+    Fall back cleanly so fresh installs still boot.
+    """
+    try:
+        return FastMCP("g-gremlin-hubspot", version=__version__)
+    except TypeError as exc:
+        if "version" not in str(exc):
+            raise
+        logger.info("FastMCP does not accept 'version'; starting without it")
+        return FastMCP("g-gremlin-hubspot")
+
+
 # Create the FastMCP server
-mcp = FastMCP(
-    "g-gremlin-hubspot",
-    version=__version__,
-)
+mcp = _create_mcp_server()
 
 # ──────────────────────────────────────────────
 # Tier 1: Read & Discover

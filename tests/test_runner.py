@@ -42,11 +42,11 @@ class TestTimeouts:
 class TestCheckGremlinVersion:
     @pytest.mark.asyncio
     async def test_accepts_current_version(self):
-        mock_result = RunResult(stdout="0.1.13\n", stderr="", exit_code=0)
+        mock_result = RunResult(stdout="0.1.14\n", stderr="", exit_code=0)
         with patch("g_gremlin_hubspot_mcp.runner.run_raw", new_callable=AsyncMock, return_value=mock_result), \
              patch("g_gremlin_hubspot_mcp.runner._find_gremlin", return_value="g-gremlin"):
             version = await check_gremlin_version()
-            assert version == "0.1.13"
+            assert version == "0.1.14"
 
     @pytest.mark.asyncio
     async def test_accepts_higher_version(self):
@@ -61,16 +61,16 @@ class TestCheckGremlinVersion:
         mock_result = RunResult(stdout="0.1.0\n", stderr="", exit_code=0)
         with patch("g_gremlin_hubspot_mcp.runner.run_raw", new_callable=AsyncMock, return_value=mock_result), \
              patch("g_gremlin_hubspot_mcp.runner._find_gremlin", return_value="g-gremlin"):
-            with pytest.raises(RuntimeError, match=">=0.1.13 required"):
+            with pytest.raises(RuntimeError, match=">=0.1.14 required"):
                 await check_gremlin_version()
 
     @pytest.mark.asyncio
     async def test_handles_prefixed_version(self):
-        mock_result = RunResult(stdout="g-gremlin 0.1.13\n", stderr="", exit_code=0)
+        mock_result = RunResult(stdout="g-gremlin 0.1.14\n", stderr="", exit_code=0)
         with patch("g_gremlin_hubspot_mcp.runner.run_raw", new_callable=AsyncMock, return_value=mock_result), \
              patch("g_gremlin_hubspot_mcp.runner._find_gremlin", return_value="g-gremlin"):
             version = await check_gremlin_version()
-            assert version == "0.1.13"
+            assert version == "0.1.14"
 
     @pytest.mark.asyncio
     async def test_raises_on_missing(self):
