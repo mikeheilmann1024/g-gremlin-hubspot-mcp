@@ -27,7 +27,34 @@ from g_gremlin_hubspot_mcp.artifacts import (
     temp_file_path,
 )
 from g_gremlin_hubspot_mcp.envelope import Safety, build_envelope
-from g_gremlin_hubspot_mcp.runner import run_gremlin
+from g_gremlin_hubspot_mcp.runner import RunResult, run_gremlin
+
+
+def _is_schema_cache_miss(result: RunResult) -> bool:
+    """Detect first-run schema cache misses from CLI output."""
+    text = f"{result.stderr}\n{result.stdout}".lower()
+    return "no cached schema found" in text
+
+
+async def _run_schema_with_auto_sync(
+    args: list[str],
+    *,
+    tool_name: str,
+) -> tuple[RunResult, bool]:
+    """Run a schema command; auto-sync cache once on cache-miss errors."""
+    result = await run_gremlin(args, tool_name=tool_name)
+    if result.ok or not _is_schema_cache_miss(result):
+        return result, False
+
+    sync_result = await run_gremlin(
+        ["hubspot", "schema", "sync", "--json"],
+        tool_name="schema.list",
+    )
+    if not sync_result.ok:
+        return result, False
+
+    retry = await run_gremlin(args, tool_name=tool_name)
+    return retry, True
 
 
 async def hubspot_auth_whoami() -> str:
@@ -69,13 +96,16 @@ async def hubspot_schema_list() -> str:
 
     Returns object type names, labels, and whether they are standard or custom.
     """
-    result = await run_gremlin(
+    result, auto_synced = await _run_schema_with_auto_sync(
         ["hubspot", "schema", "ls", "--json"],
         tool_name="schema.list",
     )
+    summary = "Listed CRM object types"
+    if result.ok and auto_synced:
+        summary = "Listed CRM object types (auto-synced schema cache)"
     return build_envelope(
         run_result=result,
-        summary="Listed CRM object types" if result.ok else "Schema list failed",
+        summary=summary if result.ok else "Schema list failed",
         safety=Safety(impact="read"),
     )
 
@@ -88,13 +118,16 @@ async def hubspot_schema_get(object_type: str) -> str:
 
     Returns properties, associations, and metadata for the object type.
     """
-    result = await run_gremlin(
+    result, auto_synced = await _run_schema_with_auto_sync(
         ["hubspot", "schema", "show", object_type, "--json"],
         tool_name="schema.get",
     )
+    summary = f"Schema for {object_type}"
+    if result.ok and auto_synced:
+        summary = f"Schema for {object_type} (auto-synced schema cache)"
     return build_envelope(
         run_result=result,
-        summary=f"Schema for {object_type}" if result.ok else f"Schema get failed for {object_type}",
+        summary=summary if result.ok else f"Schema get failed for {object_type}",
         safety=Safety(impact="read"),
     )
 

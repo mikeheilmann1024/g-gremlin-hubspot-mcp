@@ -87,6 +87,60 @@ class TestSchemaGet:
             assert "contacts" in args
 
 
+class TestSchemaAutoSync:
+    @pytest.mark.asyncio
+    async def test_schema_list_auto_sync_on_cache_miss(self):
+        cache_miss = RunResult(
+            stdout="",
+            stderr="No cached schema found. Run: g-gremlin hubspot schema sync",
+            exit_code=1,
+        )
+        sync_ok = RunResult(stdout='{"ok": true}', stderr="", exit_code=0)
+        list_ok = RunResult(stdout='{"items":[{"name":"contacts"}]}', stderr="", exit_code=0)
+
+        with patch("g_gremlin_hubspot_mcp.tools.read.run_gremlin", new_callable=AsyncMock) as mock:
+            mock.side_effect = [cache_miss, sync_ok, list_ok]
+            result = await hubspot_schema_list()
+            parsed = json.loads(result)
+
+            assert parsed["ok"] is True
+            assert "auto-synced" in parsed["summary"].lower()
+            assert mock.await_count == 3
+            assert mock.await_args_list[1].args[0] == ["hubspot", "schema", "sync", "--json"]
+
+    @pytest.mark.asyncio
+    async def test_schema_get_auto_sync_on_cache_miss(self):
+        cache_miss = RunResult(
+            stdout="",
+            stderr="No cached schema found. Run: g-gremlin hubspot schema sync",
+            exit_code=1,
+        )
+        sync_ok = RunResult(stdout='{"ok": true}', stderr="", exit_code=0)
+        get_ok = RunResult(stdout='{"name":"contacts"}', stderr="", exit_code=0)
+
+        with patch("g_gremlin_hubspot_mcp.tools.read.run_gremlin", new_callable=AsyncMock) as mock:
+            mock.side_effect = [cache_miss, sync_ok, get_ok]
+            result = await hubspot_schema_get("contacts")
+            parsed = json.loads(result)
+
+            assert parsed["ok"] is True
+            assert "auto-synced" in parsed["summary"].lower()
+            assert mock.await_count == 3
+            assert mock.await_args_list[2].args[0] == ["hubspot", "schema", "show", "contacts", "--json"]
+
+    @pytest.mark.asyncio
+    async def test_schema_list_does_not_sync_on_other_errors(self):
+        auth_err = RunResult(stdout="", stderr="HubSpot authentication failed", exit_code=1)
+
+        with patch("g_gremlin_hubspot_mcp.tools.read.run_gremlin", new_callable=AsyncMock) as mock:
+            mock.return_value = auth_err
+            result = await hubspot_schema_list()
+            parsed = json.loads(result)
+
+            assert parsed["ok"] is False
+            assert mock.await_count == 1
+
+
 class TestObjectsQuery:
     @pytest.mark.asyncio
     async def test_passes_where_clauses(self):

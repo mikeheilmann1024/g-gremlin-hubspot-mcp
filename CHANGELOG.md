@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.4
+
+- `hubspot.schema.list` and `hubspot.schema.get` now auto-sync the schema cache on first run — no manual `g-gremlin hubspot schema sync` needed
+
 ## 0.1.0 (Public Beta)
 
 Initial release. 14 HubSpot MCP tools across three tiers.
