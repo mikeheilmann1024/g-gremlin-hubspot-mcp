@@ -191,7 +191,7 @@ This is a **public beta**. Core read and analyze workflows are stable. Known gap
 - **List management** — HubSpot list creation and membership management
 - **Pipeline management** — deal/ticket pipeline configuration
 
-Found a bug or have a feature request? [Open an issue](https://github.com/foundryops/g-gremlin-hubspot-mcp/issues).
+Found a bug or have a feature request? [Open an issue](https://github.com/mikeheilmann1024/g-gremlin-hubspot-mcp/issues).
 
 ## Requires
 
@@ -202,7 +202,7 @@ Found a bug or have a feature request? [Open an issue](https://github.com/foundr
 ## Development
 
 ```bash
-git clone https://github.com/foundryops/g-gremlin-hubspot-mcp
+git clone https://github.com/mikeheilmann1024/g-gremlin-hubspot-mcp
 cd g-gremlin-hubspot-mcp
 pip install -e ".[dev]"
 pytest

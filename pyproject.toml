@@ -37,8 +37,8 @@ dev = [
 g-gremlin-hubspot-mcp = "g_gremlin_hubspot_mcp.server:main"
 
 [project.urls]
-Homepage = "https://github.com/foundryops/g-gremlin-hubspot-mcp"
-Issues = "https://github.com/foundryops/g-gremlin-hubspot-mcp/issues"
+Homepage = "https://github.com/mikeheilmann1024/g-gremlin-hubspot-mcp"
+Issues = "https://github.com/mikeheilmann1024/g-gremlin-hubspot-mcp/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/g_gremlin_hubspot_mcp"]
